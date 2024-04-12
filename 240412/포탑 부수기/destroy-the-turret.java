@@ -66,8 +66,7 @@ public class Main {
         }
 
         for(int turn=1; turn<K+1; turn++){
-            //System.out.println(turrets);
-            if(turrets.size()<=1) continue;
+            if(turrets.size()<=1) break; //부셔지지 않은 포탑이 1개가 된다면 그 즉시 중지됨
             //2-1. 공격자의 선정(가장 약한 포탑)
             Collections.sort(turrets, (a,b)->{
                 if(a.power!=b.power) return a.power-b.power; //공격력이 가장 낮은 포탑
@@ -76,7 +75,6 @@ public class Main {
                 return (b.r-a.r);
             });
             Turret attacker = turrets.get(0);
-            //System.out.println(attacker);
 
             //2-2. 공격자의 공격
             //공격대상 선정(가장 강한 포탑)
@@ -88,7 +86,6 @@ public class Main {
 
             });
             Turret attacked = turrets.get(0);
-            //System.out.println(attacked);
 
             //2-3. 레이저 공격 bfs
             //2-3-1. 레이저 공격
@@ -111,7 +108,6 @@ public class Main {
                     //2-3-2. 레이저 공격이 가능하다면 공격
                     //System.out.println("레이저 공격 가능");
                     for(int r=0; r<N+1; r++){
-                        //System.out.println(Arrays.toString(cSelected[r]));
                         for(int c=0; c<M+1; c++){
                             selected[r][c] = cSelected[r][c];
                             if(cSelected[r][c]){
@@ -137,7 +133,7 @@ public class Main {
                     if(nr==N+1) nr=1;
                     if(nc==0) nc=M;
                     if(nc==M+1) nc=1; //가장자리에서 막힌 방향으로 진행하고자 한다면, 반대편으로 나온다.
-                    if(board[nr][nc].power==0) continue; //부서진 포탑이 있는 위치는 지날 수 없다.
+                    if(board[nr][nc].power<=0) continue; //부서진 포탑이 있는 위치는 지날 수 없다.
                     if(visited[nr][nc]) continue;
                     boolean[][] newSelected = new boolean[N+1][M+1];
                     for(int r=0; r<N+1; r++){
@@ -150,10 +146,6 @@ public class Main {
                     visited[nr][nc]=true;
                 }
             }
-            
-            // for(int r=0; r<N+1; r++){
-            //     System.out.println(Arrays.toString(board[r]));
-            // }
 
             //2-3-3. 레이저 공격이 불가능하다면 포탑 공격 
             if(!isLaserAttackPossible){
@@ -168,7 +160,8 @@ public class Main {
                     if(nr==N+1) nr=1;
                     if(nc==0) nc=M;
                     if(nc==M+1) nc=1; //가장자리에서 막힌 방향으로 진행하고자 한다면, 반대편으로 나온다.
-                    if(nr==attacker.r && nc==attacker.c) continue; 
+                    if(board[nr][nc].power<=0) continue;
+                    if(nr==attacker.r && nc==attacker.c) continue;
                     if(nr==attacked.r && nc==attacked.c) board[nr][nc].power-=attacker.power;
                     else board[nr][nc].power-=attacker.power/2;
                     if(board[nr][nc].power<=0) board[nr][nc].power=0;
