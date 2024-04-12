@@ -66,6 +66,8 @@ public class Main {
         }
 
         for(int turn=1; turn<K+1; turn++){
+            //System.out.println(turrets);
+            if(turrets.size()<=1) continue;
             //2-1. 공격자의 선정(가장 약한 포탑)
             Collections.sort(turrets, (a,b)->{
                 if(a.power!=b.power) return a.power-b.power; //공격력이 가장 낮은 포탑
@@ -109,6 +111,7 @@ public class Main {
                     //2-3-2. 레이저 공격이 가능하다면 공격
                     //System.out.println("레이저 공격 가능");
                     for(int r=0; r<N+1; r++){
+                        //System.out.println(Arrays.toString(cSelected[r]));
                         for(int c=0; c<M+1; c++){
                             selected[r][c] = cSelected[r][c];
                             if(cSelected[r][c]){
@@ -179,7 +182,10 @@ public class Main {
             for(int r=1; r<N+1; r++){
                 for(int c=1; c<M+1; c++){
                     if(board[r][c].power>0 && !selected[r][c]) board[r][c].power+=1;
-                    if(board[r][c].power<=0) board[r][c].power=0;
+                    if(board[r][c].power<=0) {
+                        turrets.remove(board[r][c]);
+                        board[r][c].power=0;
+                    }
                 }
             }
             // for(int r=0; r<N+1; r++){
