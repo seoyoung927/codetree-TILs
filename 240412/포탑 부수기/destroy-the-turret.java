@@ -117,7 +117,7 @@ public class Main {
                                 }else{
                                     board[r][c].power-=attacker.power/2;
                                 }
-
+                                if(board[r][c].power<=0) board[r][c].power=0;
                                 //공격력이 0이하가 되었다면
                                 if(board[r][c].power<=0) turrets.remove(board[r][c]);
                             }
@@ -168,6 +168,7 @@ public class Main {
                     if(nr==attacker.r && nc==attacker.c) continue; 
                     if(nr==attacked.r && nc==attacked.c) board[nr][nc].power-=attacker.power;
                     else board[nr][nc].power-=attacker.power/2;
+                    if(board[nr][nc].power<=0) board[nr][nc].power=0;
                     selected[nr][nc]=true;
                     if(board[nr][nc].power<0) turrets.remove(board[nr][nc]);
                 }
@@ -196,6 +197,7 @@ public class Main {
             return (a.r-b.r);
 
         });
+        //System.out.println(turrets);
         Turret result = turrets.get(0);
         System.out.println(result.power);
 
