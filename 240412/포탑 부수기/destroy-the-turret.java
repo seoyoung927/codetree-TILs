@@ -72,9 +72,10 @@ public class Main {
                 if(a.power!=b.power) return a.power-b.power; //공격력이 가장 낮은 포탑
                 if(a.recentAttack!=b.recentAttack) return b.recentAttack-a.recentAttack; //가장 최근에 공격한 포탑
                 if((a.r+a.c)!=(b.r+b.c)) return (b.r+b.c)-(a.r+a.c); //행과 열의 합이 가장 큰 포탑
-                return (b.r-a.r);
+                return (b.c-a.c);
             });
             Turret attacker = turrets.get(0);
+            //System.out.println(attacker);
 
             //2-2. 공격자의 공격
             //공격대상 선정(가장 강한 포탑)
@@ -82,10 +83,11 @@ public class Main {
                 if(a.power!=b.power) return b.power-a.power; //공격력이 가장 높은 포탑
                 if(a.recentAttack!=b.recentAttack) return a.recentAttack-b.recentAttack; //가장 오래된 공격한 포탑
                 if((a.r+a.c)!=(b.r+b.c)) return (a.r+a.c)-(b.r+b.c); //행과 열의 합이 가장 작은 포탑
-                return (a.r-b.r);
+                return (a.c-b.c);
 
             });
             Turret attacked = turrets.get(0);
+            //System.out.println(attacked);
 
             //2-3. 레이저 공격 bfs
             //2-3-1. 레이저 공격
@@ -108,6 +110,7 @@ public class Main {
                     //2-3-2. 레이저 공격이 가능하다면 공격
                     //System.out.println("레이저 공격 가능");
                     for(int r=0; r<N+1; r++){
+                        //System.out.println(Arrays.toString(cSelected[r]));
                         for(int c=0; c<M+1; c++){
                             selected[r][c] = cSelected[r][c];
                             if(cSelected[r][c]){
@@ -116,8 +119,8 @@ public class Main {
                                 }else{
                                     board[r][c].power-=attacker.power/2;
                                 }
-                                if(board[r][c].power<=0) board[r][c].power=0;
                                 //공격력이 0이하가 되었다면
+                                if(board[r][c].power<=0) board[r][c].power=0;
                                 if(board[r][c].power<=0) turrets.remove(board[r][c]);
                             }
                         }
@@ -162,11 +165,12 @@ public class Main {
                     if(nc==M+1) nc=1; //가장자리에서 막힌 방향으로 진행하고자 한다면, 반대편으로 나온다.
                     if(board[nr][nc].power<=0) continue;
                     if(nr==attacker.r && nc==attacker.c) continue;
+
                     if(nr==attacked.r && nc==attacked.c) board[nr][nc].power-=attacker.power;
                     else board[nr][nc].power-=attacker.power/2;
-                    if(board[nr][nc].power<=0) board[nr][nc].power=0;
                     selected[nr][nc]=true;
-                    if(board[nr][nc].power<0) turrets.remove(board[nr][nc]);
+                    if(board[nr][nc].power<=0) board[nr][nc].power=0;
+                    if(board[nr][nc].power<=0) turrets.remove(board[nr][nc]);
                 }
             }
 
@@ -176,11 +180,12 @@ public class Main {
                 for(int c=1; c<M+1; c++){
                     if(board[r][c].power>0 && !selected[r][c]) board[r][c].power+=1;
                     if(board[r][c].power<=0) {
-                        turrets.remove(board[r][c]);
                         board[r][c].power=0;
+                        turrets.remove(board[r][c]);
                     }
                 }
             }
+
             // for(int r=0; r<N+1; r++){
             //     System.out.println(Arrays.toString(board[r]));
             // }
@@ -196,7 +201,7 @@ public class Main {
             return (a.r-b.r);
 
         });
-        //System.out.println(turrets);
+        
         Turret result = turrets.get(0);
         System.out.println(result.power);
 
