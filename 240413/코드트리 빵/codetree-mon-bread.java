@@ -194,9 +194,6 @@ public class Main {
                 // System.out.println(t+"초에 "+i+"번째 player의 위치 후보");
                 // System.out.println(queues[i]);
             }
-            for(Point deletePoint : deletePoints){
-                board[deletePoint.r][deletePoint.c]=-1;
-            }
 
             if(t<=m){
                 BaseCamp bc = getNearestCamp(stores[t]);
@@ -209,6 +206,9 @@ public class Main {
                 visiteds[t][bc.r][bc.c]=true;
             }
             
+            for(Point deletePoint : deletePoints){
+                board[deletePoint.r][deletePoint.c]=-1;
+            }
 
             //모든 사람들이 이동하였는지 확인
             boolean flag = true;
