@@ -25,7 +25,7 @@ public class Main {
         }
         @Override
         public String toString(){
-            return "(r="+r+", c="+c+")";
+            return "(r="+r+"c="+c+")";
         }
     }
 
@@ -40,9 +40,14 @@ public class Main {
             this.dist=dist;
             this.selected=selected;
         }
+
+        @Override
+        public String toString(){
+            return "(r="+r+"c="+c+"dist="+dist+")";
+        }
     }
 
-    public static Point getNextPoint(Point start, Point target){
+    public static Point getNextPoint(Point start, Point target, int t){
         Point next = new Point(-1,-1);
         ArrayList<boolean[][]> paths = new ArrayList<>();
         int minDist = Integer.MAX_VALUE;
@@ -53,9 +58,11 @@ public class Main {
         q.add(new Node(start.r,start.c,0,selected));
         while(!q.isEmpty()){
             Node cur = q.poll();
+            // if(t>=28 && cur.dist>=20) System.out.println(cur);
             int cr = cur.r;
             int cc = cur.c;
             int cDist = cur.dist;
+            if(cDist>minDist) continue;
             boolean[][] cSelected = cur.selected;
 
             if(cr==target.r && cc==target.c){
@@ -97,6 +104,7 @@ public class Main {
                 int nr = start.r+dr[i];
                 int nc = start.c+dc[i];
                 if(nr<=0 || nr>n || nc<=0 || nc>n) continue;
+
                 if(path[nr][nc]){
                     candidates.add(i);
                     break;
@@ -205,20 +213,30 @@ public class Main {
         players = new Point[m+1];
         int t=1;
         while(true){
+            System.out.print(t+" ");
             //1. 사람들이 이동
             ArrayList<Point> deletePoints = new ArrayList<>();
+            if(t>27) {
+                for(int r=0; r<n+1; r++){
+                    System.out.println(Arrays.toString(board[r]));
+                }
+                //System.out.println(Arrays.toString(isArrive));
+                //System.out.println(i+"번째 player: "+next);
+            }
             for(int i=1; i<Math.min(t, m+1); i++){
                 if(isArrive[i]) continue; //i번째 player가 이미 편의점에 도착했다면 다음으로
                 
-                Point next = getNextPoint(players[i], stores[i]);
-                //System.out.println(i+"번째 player: "+next);
+                Point next = getNextPoint(players[i], stores[i],t);
+                if(t>27) {
+                    //System.out.println(Arrays.toString(isArrive));
+                    System.out.println(i+"번째 player: "+next);
+                }
                 players[i] = next;
                 if(next.r==stores[i].r && next.c==stores[i].c){
                     deletePoints.add(next);
                     isArrive[i]=true;
                 }
             }
-
             for(Point deletePoint : deletePoints){
                 board[deletePoint.r][deletePoint.c]=-1;
             }
@@ -241,10 +259,12 @@ public class Main {
                 }
             }
             if(flag) break;
-
-            // System.out.println(t+": ");
-            // for(int r=0; r<n+1; r++){
-            //     System.out.println(Arrays.toString(board[r]));
+            
+            // if(t>=27){
+            //     System.out.println(t+": ");
+            //     for(int r=0; r<n+1; r++){
+            //         System.out.println(Arrays.toString(board[r]));
+            //     }
             // }
 
             t++;
