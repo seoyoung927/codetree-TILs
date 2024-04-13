@@ -81,6 +81,7 @@ public class Main {
         for(int i=0; i<4; i++){
             int nr = start.r+dr[i];
             int nc = start.c+dc[i];
+            if(nr<=0 || nr>n || nc<=0 || nc>n) continue;
             if(path[nr][nc]){
                 next = new Point(nr,nc);
                 break;
