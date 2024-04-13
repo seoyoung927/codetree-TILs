@@ -25,57 +25,58 @@ public class Main {
         }
         @Override
         public String toString(){
-            return "(r="+r+"c="+c+")";
+            return "(r="+r+", c="+c+")";
         }
     }
 
     static class Node{
+        int d;
         int r,c;
         int dist;
-        boolean[][] selected;
 
-        public Node(int r, int c, int dist, boolean[][] selected){
+        public Node(int d, int r, int c, int dist){
+            this.d=d;
             this.r=r;
             this.c=c;
             this.dist=dist;
-            this.selected=selected;
         }
 
         @Override
         public String toString(){
-            return "(r="+r+"c="+c+"dist="+dist+")";
+            return "(r="+r+", c="+c+")";
         }
     }
 
-    public static Point getNextPoint(Point start, Point target, int t){
+    public static Point getNextPoint(Point start, Point target, int t, int ii){
         Point next = new Point(-1,-1);
         ArrayList<boolean[][]> paths = new ArrayList<>();
         int minDist = Integer.MAX_VALUE;
 
         Queue<Node> q = new ArrayDeque<>();
-        boolean[][] selected = new boolean[n+1][n+1];
-        selected[start.r][start.c] = true;
-        q.add(new Node(start.r,start.c,0,selected));
+        boolean[][] visited = new boolean[n+1][n+1];
+        visited[start.r][start.c]=true;
+        for(int d=0; d<4; d++){
+            int nr = start.r+dr[d];
+            int nc = start.c+dc[d];
+            
+            if(nr<=0 || nr>n || nc<=0 || nc>n) continue;
+            if(board[nr][nc]==-1) continue;
+            if(visited[nr][nc]) continue;
+
+            q.add(new Node(d,nr,nc,0));
+            visited[nr][nc]=true;
+        }
         while(!q.isEmpty()){
             Node cur = q.poll();
-            // if(t>=28 && cur.dist>=20) System.out.println(cur);
+            int cd = cur.d;
             int cr = cur.r;
             int cc = cur.c;
             int cDist = cur.dist;
-            if(cDist>minDist) continue;
-            boolean[][] cSelected = cur.selected;
 
             if(cr==target.r && cc==target.c){
-                // for(int r=0; r<n+1; r++){
-                //     System.out.println(Arrays.toString(cSelected[r]));
-                // }
-                if(cDist<minDist){
-                    minDist=cDist;
-                    paths.clear();
-                    paths.add(cSelected);
-                }else if(cDist==minDist){
-                    paths.add(cSelected);
-                }
+                int nr = start.r+dr[cd];
+                int nc = start.c+dc[cd];
+                next = new Point(nr,nc);
                 break;
             }
 
@@ -85,37 +86,12 @@ public class Main {
                 
                 if(nr<=0 || nr>n || nc<=0 || nc>n) continue;
                 if(board[nr][nc]==-1) continue;
-                if(cSelected[nr][nc]) continue;
+                if(visited[nr][nc]) continue;
 
-                boolean[][] newSelected=new boolean[n+1][n+1];
-                for(int r=0; r<n+1; r++){
-                    for(int c=0; c<n+1; c++){
-                        newSelected[r][c]=cSelected[r][c];
-                    }
-                }
-                newSelected[nr][nc]=true;
-                q.add(new Node(nr,nc,cDist+1,newSelected));
+                visited[nr][nc]=true;
+                q.add(new Node(cur.d,nr,nc,cDist+1));
             }
         }
-
-        ArrayList<Integer> candidates = new ArrayList<>();
-        for(boolean[][] path : paths){
-            for(int i=0; i<4; i++){
-                int nr = start.r+dr[i];
-                int nc = start.c+dc[i];
-                if(nr<=0 || nr>n || nc<=0 || nc>n) continue;
-
-                if(path[nr][nc]){
-                    candidates.add(i);
-                    break;
-                }
-            }
-        }
-        Collections.sort(candidates);
-        int d = candidates.get(0);
-        int nr = start.r+dr[d];
-        int nc = start.c+dc[d];
-        next = new Point(nr,nc);
 
         return next;
     }
@@ -213,30 +189,20 @@ public class Main {
         players = new Point[m+1];
         int t=1;
         while(true){
-            System.out.print(t+" ");
             //1. 사람들이 이동
             ArrayList<Point> deletePoints = new ArrayList<>();
-            if(t>27) {
-                for(int r=0; r<n+1; r++){
-                    System.out.println(Arrays.toString(board[r]));
-                }
-                //System.out.println(Arrays.toString(isArrive));
-                //System.out.println(i+"번째 player: "+next);
-            }
             for(int i=1; i<Math.min(t, m+1); i++){
                 if(isArrive[i]) continue; //i번째 player가 이미 편의점에 도착했다면 다음으로
                 
-                Point next = getNextPoint(players[i], stores[i],t);
-                if(t>27) {
-                    //System.out.println(Arrays.toString(isArrive));
-                    System.out.println(i+"번째 player: "+next);
-                }
+                Point next = getNextPoint(players[i], stores[i], t, i);
+                //System.out.println(i+"번째 player: "+next);
                 players[i] = next;
                 if(next.r==stores[i].r && next.c==stores[i].c){
                     deletePoints.add(next);
                     isArrive[i]=true;
                 }
             }
+
             for(Point deletePoint : deletePoints){
                 board[deletePoint.r][deletePoint.c]=-1;
             }
@@ -259,12 +225,10 @@ public class Main {
                 }
             }
             if(flag) break;
-            
-            // if(t>=27){
-            //     System.out.println(t+": ");
-            //     for(int r=0; r<n+1; r++){
-            //         System.out.println(Arrays.toString(board[r]));
-            //     }
+
+            // System.out.println(t+": ");
+            // for(int r=0; r<n+1; r++){
+            //     System.out.println(Arrays.toString(board[r]));
             // }
 
             t++;
