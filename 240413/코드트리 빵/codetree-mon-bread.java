@@ -195,6 +195,10 @@ public class Main {
                 // System.out.println(queues[i]);
             }
 
+            for(Point deletePoint : deletePoints){
+                board[deletePoint.r][deletePoint.c]=-1;
+            }
+
             if(t<=m){
                 BaseCamp bc = getNearestCamp(stores[t]);
                 //이때부터 다른 사람들은 해당 베이스캠프가 있는 칸을 지나갈 수 없게 됨
@@ -204,11 +208,7 @@ public class Main {
                 queues[t]=new ArrayDeque<>();
                 queues[t].add(new Point(bc.r,bc.c));
                 visiteds[t][bc.r][bc.c]=true;
-            }
-            
-            for(Point deletePoint : deletePoints){
-                board[deletePoint.r][deletePoint.c]=-1;
-            }
+            }       
 
             //모든 사람들이 이동하였는지 확인
             boolean flag = true;
