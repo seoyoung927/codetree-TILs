@@ -73,7 +73,7 @@ public class Main {
 
                 if (!address.containsKey(name)) address.put(name, addIdx++);
 
-                for (int time = prevT; time < t; time++) {
+                for (int time = prevT; time < Math.min(prevT+L, t); time++) {
                     for (int i = 0; i < addIdx; i++) {
                         if (remainS[i] == 0 || remainC[i] == 0) continue;
 
@@ -116,7 +116,7 @@ public class Main {
 
                 if (!address.containsKey(name)) address.put(name, addIdx++);
 
-                for (int time = prevT; time < t; time++) {
+                for (int time = prevT; time < Math.min(prevT+L, t); time++) {
                     for (int i = 0; i < addIdx; i++) {
                         if (remainS[i] == 0 || remainC[i] == 0) continue;
 
@@ -152,7 +152,7 @@ public class Main {
                 // 300 t
                 int t = Integer.parseInt(st.nextToken());
 
-                for (int time = prevT; time <= t; time++) {
+                for (int time = prevT; time <= Math.min(prevT+L, t); time++) {
                     for (int i = 0; i < addIdx; i++) {
                         if (remainS[i] == 0 || remainC[i] == 0) continue;
 
