@@ -166,7 +166,6 @@ public class Main {
         // 게임 시작
         for(int turn = 1; turn<=M; turn++){
             if(outCnt==P) break;
-
             // 루돌프
             int nearestSanta = getSantaIdx();
             int rudolphDirection = getRudolphDirection(nearestSanta);
@@ -206,7 +205,7 @@ public class Main {
                         santa[santaIdx].isAlive = false;
                         outCnt++;
                         continue;
-                    }else if(map[nsr][nsc]>0){
+                    }else if(map[nsr][nsc]>0 && map[nsr][nsc]!=santaIdx){
                         // 상호작용 발생
                         moveSanta(map[nsr][nsc], -1* dsr[santaDirection], -1 *dsc[santaDirection] , 1);
                     }
@@ -223,7 +222,7 @@ public class Main {
             }
 
             for(int santaIdx=1; santaIdx<=P; santaIdx++){
-                if(santa[santaIdx].isAlive) santa[santaIdx].score++;
+                if(santa[santaIdx].isAlive) santa[santaIdx].score += 1;
             }
         }
 
@@ -232,6 +231,5 @@ public class Main {
         for(int santaIdx=1; santaIdx<=P; santaIdx++){
             System.out.print(santa[santaIdx].score+" ");
         }
-
     }
 }
